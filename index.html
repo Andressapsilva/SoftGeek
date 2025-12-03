@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Softgeek Sua loja virtual de mangás</title> 
     
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="script.js"></script>
     <link rel="stylesheet" href="styles.css"> 
 </head>
 <body class="bg-stone-950 text-white min-h-screen font-sans"> 
@@ -34,10 +32,10 @@
         <div class="flex flex-col md:flex-row items-center justify-between relative p-4 pt-24 pb-8 md:pt-24 md:pb-16">
             
             <div class="md:w-1/2 relative z-10 text-center md:text-left order-2 md:order-1 
-                        flex justify-center md:justify-start items-end min-h-[450px]"> 
+                         flex justify-center md:justify-start items-end min-h-[450px]"> 
                 <img src="Imagens/Tomioka.png" alt="Tomioka Giyuu" 
-                     class="w-64 md:w-80 lg:w-96 h-auto object-contain mt-8 md:mt-0" 
-                     style="min-width: 200px;">
+                    class="w-64 md:w-80 lg:w-96 h-auto object-contain mt-8 md:mt-0" 
+                    style="min-width: 200px;">
             </div>
 
             <div class="md:w-1/2 md:pl-10 mt-10 md:mt-0 relative z-10 order-1 md:order-2 self-center">
@@ -49,7 +47,7 @@
 
                 <h3 class="text-3xl font-bold mb-6 border-b border-blue-600 pb-2">MANGÁS EM DESTAQUE</h3>
                 <div id="destaquesContainer" class="grid grid-cols-2 gap-4">
-                    <p class="col-span-2 text-blue-300 font-medium md:text-left">Carregando destaques...</p>
+                    <p class="col-span-2 text-blue-300 font-medium md:text-left">Carregando dados de busca...</p>
                 </div>
             </div>
         </div>
@@ -59,7 +57,7 @@
             <h3 class="text-2xl font-bold mb-4">Teste os Algoritmos de Busca</h3>
             
             <input type="text" id="campoBusca" placeholder="ID (O(1)), Título (O(log n)) ou Categoria/Tipo (O(n))" 
-                   class="w-full p-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 mb-4">
+                    class="w-full p-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 mb-4">
             
             <div class="flex flex-wrap gap-4 justify-between">
                 <button onclick="buscarHashmap()" class="px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 flex-1 min-w-[150px]">
@@ -83,7 +81,7 @@
 
     </main>
 
-    
+    <script src="script.js"></script>
     <script src="render.js"></script>
 </body>
 </html>
