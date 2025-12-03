@@ -82,8 +82,8 @@ async function carregarMangas() {
         
         if (destaques.length === 0) {
             destaquesContainer.innerHTML = '<p class="col-span-2 text-yellow-400">✅ Dados carregados! A busca O(1) já está ativa. Para simplificar a entrega, o projeto focará apenas nas funcionalidades de busca.</p>';
-        } else {
-             destaquesContainer.insertAdjacentHTML('afterbegin', `<h2 class="col-span-2 text-green-400 mb-4">✅ ${destaques.length} Mangás em Destaque Carregados!</h2>`);
+        
+            
         }
 
         campoBusca.parentNode.style.position = 'relative'; 
