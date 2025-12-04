@@ -1,9 +1,9 @@
 import sqlite3
 import csv
 
-# Caminhos
-CSV_PATH = "SoftGeek Mangás.csv"       # Seu arquivo CSV
-DB_PATH = "mangas.db"         # Seu banco SQLite
+# Caminhos (Corrigido: removido o U+00A0 e ajustada a sintaxe da variável)
+CSV_PATH = "SoftGeek.csv"
+DB_PATH = "mangas.db"
 
 # 🔹 1. Conectar ao banco
 conn = sqlite3.connect(DB_PATH)
@@ -12,30 +12,30 @@ cur = conn.cursor()
 # 🔹 2. Criar tabela (se não existir)
 cur.execute("""
 CREATE TABLE IF NOT EXISTS mangas (
-    id INTEGER PRIMARY KEY,
-    titulo TEXT,
-    categoria TEXT,
-    preco REAL,
-    imagem TEXT
+    id INTEGER PRIMARY KEY,
+    titulo TEXT,
+    categoria TEXT,
+    preco REAL,
+    imagem TEXT
 )
 """)
 
 print("Tabela verificada/criada com sucesso.")
 
-# 3. Importar o CSV
+# 3. Importar o CSV (Corrigido: removido U+00A0 de 'with open' e 'reader = csv.reader(f)')
 with open(CSV_PATH, "r", encoding="utf-8-sig") as f:
-    reader = csv.reader(f)
-    next(reader)   # pular header
+    reader = csv.reader(f)
+    next(reader)    # pular header
 
-    for row in reader:
+    for row in reader:
         # AJUSTE DA SOLUÇÃO: Fatiamento para usar apenas os 5 primeiros elementos
         # Isso resolve o erro de "Incorrect number of bindings supplied"
         dados_para_inserir = row[:5]
         
-        cur.execute("""
-            INSERT OR REPLACE INTO mangas (id, titulo, categoria, preco, imagem)
-            VALUES (?, ?, ?, ?, ?)
-        """, dados_para_inserir)
+        cur.execute("""
+            INSERT OR REPLACE INTO mangas (id, titulo, categoria, preco, imagem)
+            VALUES (?, ?, ?, ?, ?)
+        """, dados_para_inserir)
 
 
 # 🔹 4. Salvar

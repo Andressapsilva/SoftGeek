@@ -1,9 +1,11 @@
 // =================================================================
-// script.js: VERSÃO FINAL COM JSON LOCAL
+// script.js: VERSÃO FINAL COM JSON LOCAL E REPETIÇÃO PARA TEMPO (O(n))
 // =================================================================
 
-// REMOVIDO: import { createClient } do Supabase
+// 🚨 NOVO: Define o número de repetições para obter um tempo médio mensurável
+const REPETICOES = 1000; 
 
+// REMOVIDO: import { createClient } do Supabase
 // REMOVIDO: As constantes SUPABASE_URL, SUPABASE_ANON_KEY e TABELA_MANGAS
 // REMOVIDO: A inicialização const supabase = createClient(...)
 
@@ -29,7 +31,20 @@ const mangasDestaqueIDs = [
 // Estruturas de Dados
 let todosOsMangas = []; 
 let mangasPorId = {};   
-let temposExecucao = { hashmap: 0, indexada: 0, sequencial: 0 };   
+let temposExecucao = { hashmap: 0, indexada: 0, sequencial: 0 };    
+
+// Função simples de hash (djb2) que retorna hex sem sinal
+function computeHash(str) {
+    if (!str) return null;
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i); /* hash * 33 + c */
+        // Mantém em 32 bits
+        hash = hash & 0xFFFFFFFF;
+    }
+    // Converte para valor positivo e hex
+    return (hash >>> 0).toString(16);
+}
 
 const destaquesContainer = document.getElementById('destaquesContainer');
 const campoBusca = document.getElementById('campoBusca');
@@ -123,11 +138,8 @@ function exibirResultados(resultados, instrucao, tempo) {
     const areaResultados = document.getElementById('areaResultados');
 
     areaResultados.innerHTML = '';
-    
-    const header = document.createElement('h2');
-    header.className = 'col-span-full text-lg font-semibold text-blue-300 mb-4 bg-gray-900/70 p-3 rounded-lg backdrop-blur';
-    header.innerHTML = `${instrucao} <span class="text-sm text-yellow-300 font-bold">Tempo: ${tempo.toFixed(3)} ms</span>`;
-    areaResultados.appendChild(header);
+    // Não exibir a instrução de busca aqui — a tabela na página de relatórios
+    // já apresentará tempos e detalhes. Apenas exibimos os resultados (cards).
 
     if (!resultados || resultados.length === 0 || (Array.isArray(resultados) && resultados.every(r => !r))) {
         const p = document.createElement('p');
@@ -234,74 +246,83 @@ async function buscarTudoEComparar() {
     }
 
     sugestoesContainer.innerHTML = '';
+    
+    let resultadoHashmap = null;
+    let resultadosIndexada = [];
+    let resultadosSequencial = [];
+    const termoLower = termo.toLowerCase();
 
-    // Busca 1: Hashmap (ID)
+    // 1. Busca: Hashmap (ID) - O(1) - SEM REPETIÇÃO
     const inicio1 = performance.now();
-    const resultado1 = mangasPorId[termo];
+    if (!isNaN(termo) && termo.length > 0) { 
+        resultadoHashmap = mangasPorId[termo];
+    }
     const fim1 = performance.now();
     temposExecucao.hashmap = fim1 - inicio1;
 
-    // Busca 2: Indexada (Título)
+
+    // 2. Busca: Indexada (Título) - O(n) Local - COM REPETIÇÃO
     const inicio2 = performance.now();
-    const resultados2 = todosOsMangas.filter(manga => 
-        manga.Título && manga.Título.toLowerCase().includes(termo.toLowerCase())
-    );
+    for (let i = 0; i < REPETICOES; i++) {
+        resultadosIndexada = todosOsMangas.filter(manga => 
+            manga.Título && manga.Título.toLowerCase().includes(termoLower)
+        );
+    }
     const fim2 = performance.now();
-    temposExecucao.indexada = fim2 - inicio2;
+    // 🚨 CALCULA A MÉDIA
+    temposExecucao.indexada = (fim2 - inicio2) / REPETICOES;
 
-    // Busca 3: Sequencial (Categoria)
+    // 3. Busca: Sequencial (Categoria/Tipo) - O(n) Local - COM REPETIÇÃO
     const inicio3 = performance.now();
-    const resultados3 = todosOsMangas.filter(manga => 
-        manga.Categoria && manga.Categoria.toLowerCase().includes(termo.toLowerCase())
-    );
+    for (let i = 0; i < REPETICOES; i++) {
+        resultadosSequencial = todosOsMangas.filter(manga => 
+            manga.Categoria && manga.Categoria.toLowerCase().includes(termoLower)
+        );
+    }
     const fim3 = performance.now();
-    temposExecucao.sequencial = fim3 - inicio3;
+    // 🚨 CALCULA A MÉDIA
+    temposExecucao.sequencial = (fim3 - inicio3) / REPETICOES;
 
-    // Exibe a tabela de comparação
-    exibirTabelaComparacao();
-    
-    // Exibe o resultado da busca por ID (mais rápida)
-    exibirResultados([resultado1], `Comparação de Algoritmos concluída!`, temposExecucao.hashmap);
+
+    // --- CRIAÇÃO DO RELATÓRIO PARA LOCALSTORAGE ---
+
+    // Pega o ID para o Hash e o Link
+    const repHashmapId = resultadoHashmap ? resultadoHashmap.ID.toString() : null;
+    const repIndexadaId = (resultadosIndexada.length > 0) ? resultadosIndexada[0].ID.toString() : null;
+    const repSequencialId = (resultadosSequencial.length > 0) ? resultadosSequencial[0].ID.toString() : null;
+
+    const relatorio = {
+        termo: termo,
+        tempos: temposExecucao,
+        counts: {
+            hashmap: resultadoHashmap ? 1 : 0,
+            indexada: resultadosIndexada.length,
+            sequencial: resultadosSequencial.length
+        },
+        representatives: {
+            // Garante que o Hash seja calculado apenas se houver um ID
+            hashmap: repHashmapId ? { id: repHashmapId, hash: computeHash(repHashmapId) } : null,
+            indexada: repIndexadaId ? { id: repIndexadaId, hash: computeHash(repIndexadaId) } : null,
+            sequencial: repSequencialId ? { id: repSequencialId, hash: computeHash(repSequencialId) } : null
+        },
+        // Escolhe uma imagem representativa
+        image_url: (resultadoHashmap && resultadoHashmap.image_url) ? resultadoHashmap.image_url :
+                   (resultadosIndexada.length > 0 && resultadosIndexada[0].image_url) ? resultadosIndexada[0].image_url :
+                   (resultadosSequencial.length > 0 && resultadosSequencial[0].image_url) ? resultadosSequencial[0].image_url : null,
+        timestamp: Date.now()
+    };
+
+    try {
+        localStorage.setItem('softgeek_relatorio', JSON.stringify(relatorio));
+    } catch (e) {
+        console.error('Erro ao salvar relatório no localStorage:', e);
+    }
+
+    // Redireciona para a página de relatórios
+    window.location.href = 'relatorios.html';
 }
 
-// =================================================================
-// 3.5 FUNÇÃO PARA EXIBIR TABELA DE COMPARAÇÃO DE TEMPOS
-// =================================================================
 
-function exibirTabelaComparacao() {
-    const containerComparacao = document.getElementById('containerComparacao');
-    
-    const tabelaHTML = `
-        <table class="w-full border-collapse text-sm">
-            <thead>
-                <tr class="bg-blue-600 text-white font-bold">
-                    <th class="border border-gray-600 p-3 text-left">Método de Busca</th>
-                    <th class="border border-gray-600 p-3 text-center">Complexidade</th>
-                    <th class="border border-gray-600 p-3 text-right">Tempo (ms)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="bg-gray-700 hover:bg-gray-600 transition">
-                    <td class="border border-gray-600 p-3">Hashmap (ID)</td>
-                    <td class="border border-gray-600 p-3 text-center font-semibold text-blue-300">O(1)</td>
-                    <td class="border border-gray-600 p-3 text-right font-bold text-green-400">${temposExecucao.hashmap.toFixed(4)}</td>
-                </tr>
-                <tr class="bg-gray-700 hover:bg-gray-600 transition">
-                    <td class="border border-gray-600 p-3">Indexada (Título)</td>
-                    <td class="border border-gray-600 p-3 text-center font-semibold text-yellow-300">O(n)</td>
-                    <td class="border border-gray-600 p-3 text-right font-bold text-yellow-400">${temposExecucao.indexada.toFixed(4)}</td>
-                </tr>
-                <tr class="bg-gray-700 hover:bg-gray-600 transition">
-                    <td class="border border-gray-600 p-3">Sequencial (Categoria)</td>
-                    <td class="border border-gray-600 p-3 text-center font-semibold text-orange-300">O(n)</td>
-                    <td class="border border-gray-600 p-3 text-right font-bold text-orange-400">${temposExecucao.sequencial.toFixed(4)}</td>
-                </tr>
-            </tbody>
-        </table>
-    `;
-    
-    containerComparacao.innerHTML = tabelaHTML;
-}
 
 // Função de busca Autocomplete (AGORA O(n) Local)
 async function buscarSugestoes(termo) {
@@ -356,6 +377,14 @@ campoBusca.addEventListener('input', async (e) => {
         renderizarSugestoes(sugestoes);
     } else {
         sugestoesContainer.innerHTML = '';
+    }
+});
+
+// Ao pressionar Enter no campo de busca, executar buscarTudoEComparar()
+campoBusca.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        buscarTudoEComparar();
     }
 });
 

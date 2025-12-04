@@ -1,58 +1,58 @@
 [
     {
-        "ID": 2456,
-        "Título": "Jujutsu Kaisen",
-        "Categoria": "Manga",
-        "image_url": "https://cdn.myanimelist.net/images/anime/1937/111424l.jpg",
-        "Volumes": 30,
-        "Lançamento": 2018
-    },
-    {
-        "ID": 5092,
-        "Título": "Kimetsu no Yaiba",
-        "Categoria": "Manga",
-        "image_url": "https://cdn.myanimelist.net/images/anime/1786/107453l.jpg",
-        "Volumes": 23,
-        "Lançamento": 2016
-    },
-    {
-        "ID": 80,
+        "ID": "80",
         "Título": "Mashle",
         "Categoria": "Manga",
-        "image_url": "https://cdn.myanimelist.net/images/anime/1378/124982l.jpg",
-        "Volumes": 18,
-        "Lançamento": 2020
+        "image_url": "https://cdn.myanimelist.net/images/anime/1218/135107l.jpg",
+        "Volumes": "18",
+        "Lançamento": "2020-2023"
     },
     {
-        "ID": 8371,
-        "Título": "Naruto",
-        "Categoria": "Manga",
-        "image_url": "https://cdn.myanimelist.net/images/anime/13/11194l.jpg",
-        "Volumes": 72,
-        "Lançamento": 1999
-    },
-    {
-        "ID": 2435,
+        "ID": "2435",
         "Título": "Solo Leveling",
         "Categoria": "Manhwa",
         "image_url": "https://cdn.myanimelist.net/images/manga/1/227594l.jpg",
-        "Volumes": 14,
-        "Lançamento": 2018
+        "Volumes": "14",
+        "Lançamento": "2018-2021"
     },
     {
-        "ID": 5883,
-        "Título": "Dr Stone",
+        "ID": "2456",
+        "Título": "Jujutsu Kaisen",
         "Categoria": "Manga",
-        "image_url": "https://cdn.myanimelist.net/images/anime/1758/97736l.jpg",
-        "Volumes": 26,
-        "Lançamento": 2017
+        "image_url": "https://cdn.myanimelist.net/images/anime/1937/111424l.jpg",
+        "Volumes": "26",
+        "Lançamento": "2018-Atual"
     },
     {
-        "ID": 7131,
+        "ID": "5092",
+        "Título": "Kimetsu no Yaiba",
+        "Categoria": "Manga",
+        "image_url": "https://cdn.myanimelist.net/images/anime/1286/99889l.jpg",
+        "Volumes": "23",
+        "Lançamento": "2016-2020"
+    },
+    {
+        "ID": "5883",
+        "Título": "Dr. Stone",
+        "Categoria": "Sci-Fi",
+        "image_url": "https://cdn.myanimelist.net/images/anime/1758/97736l.jpg",
+        "Volumes": "26",
+        "Lançamento": "2017-2022"
+    },
+    {
+        "ID": "7131",
         "Título": "Chainsaw Man",
         "Categoria": "Manga",
         "image_url": "https://cdn.myanimelist.net/images/anime/1803/132254l.jpg",
-        "Volumes": 16,
-        "Lançamento": 2018
+        "Volumes": "16",
+        "Lançamento": "2018-Atual"
+    },
+    {
+        "ID": "8371",
+        "Título": "Naruto",
+        "Categoria": "Manga",
+        "image_url": "https://cdn.myanimelist.net/images/anime/9/59431l.jpg",
+        "Volumes": "72",
+        "Lançamento": "1999-2014"
     }
 ]
