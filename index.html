@@ -27,37 +27,35 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto pb-16 overflow-hidden">
+    <main class="pb-16 overflow-hidden" style="background-image: url('Imagens/Giyu-san.png'); background-size: cover; background-position: left center; background-attachment: fixed; min-height: 100vh; position: relative;">
+        <!-- Overlay escuro leve para melhor legibilidade (reduzido para tornar a imagem mais visível) -->
+        <div class="absolute inset-0 bg-stone-950/20" style="pointer-events: none;"></div>
         
-        <div class="flex flex-col md:flex-row items-center justify-between relative p-4 pt-24 pb-8 md:pt-24 md:pb-16">
-            
-            <div class="md:w-1/2 relative z-10 text-center md:text-left order-2 md:order-1 
-                         flex justify-center md:justify-start items-end min-h-[450px]"> 
-                <img src="Imagens/Tomioka.png" alt="Tomioka Giyuu" 
-                    class="w-64 md:w-80 lg:w-96 h-auto object-contain mt-8 md:mt-0" 
-                    style="min-width: 200px;">
+        <div class="flex flex-col md:flex-row items-center justify-between relative p-4 pt-24 pb-8 md:pt-24 md:pb-16 z-10 max-w-7xl mx-auto">
+            <div class="md:w-[60%] relative z-10 text-center md:text-left order-2 md:order-1 hidden md:flex">
             </div>
-
-            <div class="md:w-1/2 md:pl-10 mt-10 md:mt-0 relative z-10 order-1 md:order-2 self-center">
-                <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-none mb-8">Sua loja virtual de mangás</h2>
+            <div class="md:w-[40%] md:pl-10 mt-10 md:mt-0 relative z-10 order-1 md:order-2 self-center">
+                <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-12 text-center">Sua loja virtual de mangás</h2>
                 
-                <button class="px-8 py-3 bg-red-600 text-white font-bold rounded-lg shadow-xl hover:bg-red-700 transition uppercase mb-12">
+                <button class="px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-bold rounded-lg shadow-xl hover:from-red-700 hover:to-red-800 transition uppercase mb-12 w-full">
                     COMPRE AGORA
                 </button>
 
-                <h3 class="text-3xl font-bold mb-6 border-b border-blue-600 pb-2">MANGÁS EM DESTAQUE</h3>
-                <div id="destaquesContainer" class="grid grid-cols-2 gap-4">
-                    <p class="col-span-2 text-blue-300 font-medium md:text-left">Carregando dados de busca...</p>
+                <h3 class="text-3xl font-bold mb-6 border-b border-blue-600 pb-2 text-center">MANGÁS EM DESTAQUE</h3>
+                <div id="destaquesContainer" class="grid grid-cols-2 gap-6">
+                    <p class="col-span-2 text-blue-300 font-medium text-center">Carregando dados de busca...</p>
                 </div>
             </div>
         </div>
 
         
-        <div class="bg-gray-800 p-6 rounded-xl shadow-2xl mt-24 mb-10 relative z-10 border-t-2 border-blue-600">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-2xl mt-24 mb-10 relative z-10 border-t-2 border-blue-600 max-w-7xl mx-auto">
             <h3 class="text-2xl font-bold mb-4">Teste os Algoritmos de Busca</h3>
             
-            <input type="text" id="campoBusca" placeholder="Digite ID, Título ou Categoria para buscar e comparar" 
-                    class="w-full p-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 mb-4">
+            <div class="relative w-full">
+                <input type="text" id="campoBusca" placeholder="Digite ID, Título ou Categoria para buscar e comparar" 
+                        class="w-full p-3 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 mb-4">
+            </div>
             
             <div class="flex flex-wrap gap-4 justify-between">
                 <button onclick="buscarTudoEComparar()" 
@@ -68,13 +66,15 @@
             
             <p id="tempoBusca" class="mt-4 text-sm text-gray-400 font-semibold"></p>
             
-            <div id="containerComparacao" class="mt-8">
-                </div>
+            <div id="containerComparacao" class="mt-8 overflow-x-auto">
+            </div>
         </div>
 
-        <h3 class="text-3xl font-bold mt-16 mb-6 border-b border-blue-600 pb-2">Resultado Principal</h3>
-        <div id="areaResultados" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            <p class="text-gray-400 col-span-full">Use o botão acima para testar e comparar os algoritmos de busca.</p>
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-4xl md:text-5xl font-extrabold mt-16 mb-6 text-white text-opacity-95 border-b-2 border-blue-500 pb-3">Resultado Principal</h3>
+            <div id="areaResultados" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                <p class="text-gray-300 col-span-full">Use o botão acima para testar e comparar os algoritmos de busca.</p>
+            </div>
         </div>
 
     </main>

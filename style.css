@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
 
 /* O Tailwind define a fonte principal no <body>, mas essa linha garante que 'Poppins' 
-   seja usada, caso o Tailwind não esteja configurado para isso. */
+   seja usada, caso o Tailwind não esteja configurado para isso. */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* ---------------------------------------------------------------- */
@@ -13,22 +13,46 @@ body {
 
 /* Largura da barra de rolagem (Chrome, Safari) */
 body::-webkit-scrollbar {
-    width: 8px;
+    width: 8px;
 }
 
 /* Fundo da barra de rolagem (Track) */
 body::-webkit-scrollbar-track {
-    background: #1f2937; /* Corrigido para uma cor mais escura que combina com o fundo do site (gray-900) */
+    background: #1f2937; /* Corrigido para uma cor mais escura que combina com o fundo do site (gray-900) */
 }
 
 /* ✅ CORREÇÃO DE SINTAXE: O polegar (Thumb) da barra de rolagem */
 body::-webkit-scrollbar-thumb {
-    background-color: #3b82f6; /* Azul do tema (blue-600) para destaque */
-    border-radius: 10px;
-    border: 2px solid #111827; /* Borda escura para contraste */
+    background-color: #3b82f6; /* Azul do tema (blue-600) para destaque */
+    border-radius: 10px;
+    border: 2px solid #111827; /* Borda escura para contraste */
 }
 
 /* Estilo hover para o polegar, para melhor usabilidade */
 body::-webkit-scrollbar-thumb:hover {
-    background-color: #60a5fa; /* Azul mais claro no hover */
+    background-color: #60a5fa; /* Azul mais claro no hover */
+}
+
+/* ---------------------------------------------------------------- */
+/* ESTILOS DA IMAGEM DO GIYU (Integração e Redimensionamento) */
+/* ---------------------------------------------------------------- */
+
+#giyu-display {
+    /* Define a imagem de fundo */
+    background-image: url('Imagens/Tomioka.png'); 
+    
+    /* Garante que a imagem inteira caiba sem cortes e respeite a proporção do personagem */
+    background-size: contain; 
+    
+    /* Alinha o Giyu à parte inferior do contêiner para que ele pareça estar "em pé" */
+    background-position: center bottom; 
+    
+    /* Não repetir a imagem */
+    background-repeat: no-repeat;
+    
+    /* --- EFEITO MÁGICO DE INTEGRAÇÃO (FADE OUT) --- */
+    /* Usa uma máscara de gradiente para suavizar a borda superior do personagem, 
+       fundindo-o suavemente ao fundo preto e removendo o visual de "recorte". */
+    mask-image: linear-gradient(to top, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 80%, transparent 100%);
 }

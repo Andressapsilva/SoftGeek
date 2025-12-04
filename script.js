@@ -29,12 +29,13 @@ const mangasDestaqueIDs = [
 // Estruturas de Dados
 let todosOsMangas = []; 
 let mangasPorId = {};   
+let temposExecucao = { hashmap: 0, indexada: 0, sequencial: 0 };   
 
 const destaquesContainer = document.getElementById('destaquesContainer');
 const campoBusca = document.getElementById('campoBusca');
 const sugestoesContainer = document.createElement('div');
 sugestoesContainer.id = 'sugestoesBusca';
-sugestoesContainer.className = 'absolute z-30 w-full bg-gray-700 shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto';
+sugestoesContainer.className = 'absolute z-30 w-full bg-gray-700 shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto left-0 right-0 box-border';
 
 
 // =================================================================
@@ -113,7 +114,7 @@ function criarCard(manga) {
         <h3 class="text-white font-bold text-center text-sm truncate w-full">${manga.Título}</h3>
         <p class="text-gray-400 text-xs">${manga.Categoria}</p>
         <a href="${manga.page_url || '#'}" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs font-semibold">Ver Página</a>
-        <p class="text-green-500 text-xs">ID: ${manga.ID}</p>
+        
     `;
     return card;
 }
@@ -124,8 +125,8 @@ function exibirResultados(resultados, instrucao, tempo) {
     areaResultados.innerHTML = '';
     
     const header = document.createElement('h2');
-    header.className = 'col-span-full text-lg font-semibold text-blue-400 mb-4';
-    header.innerHTML = `${instrucao} <span class="text-sm text-yellow-400">Tempo: ${tempo.toFixed(3)} ms</span>`;
+    header.className = 'col-span-full text-lg font-semibold text-blue-300 mb-4 bg-gray-900/70 p-3 rounded-lg backdrop-blur';
+    header.innerHTML = `${instrucao} <span class="text-sm text-yellow-300 font-bold">Tempo: ${tempo.toFixed(3)} ms</span>`;
     areaResultados.appendChild(header);
 
     if (!resultados || resultados.length === 0 || (Array.isArray(resultados) && resultados.every(r => !r))) {
@@ -167,6 +168,8 @@ async function buscarHashmap() {
     const resultado = mangasPorId[termo]; 
     const fim = performance.now();
     const tempo = fim - inicio;
+    
+    temposExecucao.hashmap = tempo;
 
     exibirResultados([resultado], `Busca por ID (Hashmap - O(1)) concluída.`, tempo);
 }
@@ -187,9 +190,11 @@ async function buscarIndexada() {
 
     const fim = performance.now();
     const tempo = fim - inicio;
+    
+    temposExecucao.indexada = tempo;
 
     if (resultados && resultados.length > 0) {
-        resultados[0].instrucao = `ID para Busca O(1): ${resultados[0].ID} (Clique para Copiar)`;
+        // não inserir instrução com ID — mantemos apenas os resultados para exibição limpa
     }
 
     exibirResultados(resultados, `Busca por Título (Sequencial em Array - O(n)) concluída. Total de ${resultados.length} resultados.`, tempo);
@@ -210,13 +215,93 @@ async function buscarSequencial() {
 
     const fim = performance.now();
     const tempo = fim - inicio;
+    
+    temposExecucao.sequencial = tempo;
 
     exibirResultados(resultados, `Busca por Tipo (Sequencial em Array - O(n)) concluída. Total de ${resultados.length} resultados.`, tempo);
 }
 
 // =================================================================
-// 3. IMPLEMENTAÇÃO DO AUTOCOMPLETE (Pesquisa Dinâmica)
+// FUNÇÃO PARA BUSCAR E COMPARAR TODOS OS ALGORITMOS
 // =================================================================
+
+async function buscarTudoEComparar() {
+    const termo = campoBusca.value.trim();
+    
+    if (!termo) {
+        alert('Por favor, digite algo para fazer a busca!');
+        return;
+    }
+
+    sugestoesContainer.innerHTML = '';
+
+    // Busca 1: Hashmap (ID)
+    const inicio1 = performance.now();
+    const resultado1 = mangasPorId[termo];
+    const fim1 = performance.now();
+    temposExecucao.hashmap = fim1 - inicio1;
+
+    // Busca 2: Indexada (Título)
+    const inicio2 = performance.now();
+    const resultados2 = todosOsMangas.filter(manga => 
+        manga.Título && manga.Título.toLowerCase().includes(termo.toLowerCase())
+    );
+    const fim2 = performance.now();
+    temposExecucao.indexada = fim2 - inicio2;
+
+    // Busca 3: Sequencial (Categoria)
+    const inicio3 = performance.now();
+    const resultados3 = todosOsMangas.filter(manga => 
+        manga.Categoria && manga.Categoria.toLowerCase().includes(termo.toLowerCase())
+    );
+    const fim3 = performance.now();
+    temposExecucao.sequencial = fim3 - inicio3;
+
+    // Exibe a tabela de comparação
+    exibirTabelaComparacao();
+    
+    // Exibe o resultado da busca por ID (mais rápida)
+    exibirResultados([resultado1], `Comparação de Algoritmos concluída!`, temposExecucao.hashmap);
+}
+
+// =================================================================
+// 3.5 FUNÇÃO PARA EXIBIR TABELA DE COMPARAÇÃO DE TEMPOS
+// =================================================================
+
+function exibirTabelaComparacao() {
+    const containerComparacao = document.getElementById('containerComparacao');
+    
+    const tabelaHTML = `
+        <table class="w-full border-collapse text-sm">
+            <thead>
+                <tr class="bg-blue-600 text-white font-bold">
+                    <th class="border border-gray-600 p-3 text-left">Método de Busca</th>
+                    <th class="border border-gray-600 p-3 text-center">Complexidade</th>
+                    <th class="border border-gray-600 p-3 text-right">Tempo (ms)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-gray-700 hover:bg-gray-600 transition">
+                    <td class="border border-gray-600 p-3">Hashmap (ID)</td>
+                    <td class="border border-gray-600 p-3 text-center font-semibold text-blue-300">O(1)</td>
+                    <td class="border border-gray-600 p-3 text-right font-bold text-green-400">${temposExecucao.hashmap.toFixed(4)}</td>
+                </tr>
+                <tr class="bg-gray-700 hover:bg-gray-600 transition">
+                    <td class="border border-gray-600 p-3">Indexada (Título)</td>
+                    <td class="border border-gray-600 p-3 text-center font-semibold text-yellow-300">O(n)</td>
+                    <td class="border border-gray-600 p-3 text-right font-bold text-yellow-400">${temposExecucao.indexada.toFixed(4)}</td>
+                </tr>
+                <tr class="bg-gray-700 hover:bg-gray-600 transition">
+                    <td class="border border-gray-600 p-3">Sequencial (Categoria)</td>
+                    <td class="border border-gray-600 p-3 text-center font-semibold text-orange-300">O(n)</td>
+                    <td class="border border-gray-600 p-3 text-right font-bold text-orange-400">${temposExecucao.sequencial.toFixed(4)}</td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    
+    containerComparacao.innerHTML = tabelaHTML;
+}
 
 // Função de busca Autocomplete (AGORA O(n) Local)
 async function buscarSugestoes(termo) {
@@ -247,27 +332,16 @@ function renderizarSugestoes(sugestoes) {
     sugestoes.forEach(manga => {
         const item = document.createElement('div');
         item.className = 'p-3 hover:bg-blue-600 cursor-pointer border-b border-gray-600 flex justify-between items-center';
-        
-        const nomeId = document.createElement('span');
-        nomeId.innerHTML = `<strong>${manga.Título}</strong> (ID: ${manga.ID})`;
-        
-        const copyBtn = document.createElement('button');
-        copyBtn.textContent = 'Copiar ID';
-        copyBtn.className = 'ml-3 px-2 py-1 bg-green-500 text-xs rounded hover:bg-green-600 transition';
-        copyBtn.onclick = (e) => {
-            e.stopPropagation(); 
-            navigator.clipboard.writeText(manga.ID);
-            copyBtn.textContent = 'Copiado!';
-            setTimeout(() => copyBtn.textContent = 'Copiar ID', 1000);
-        };
+        // Apenas o nome (sem ID) na sugestão
+        const nomeSpan = document.createElement('span');
+        nomeSpan.innerHTML = `<strong>${manga.Título}</strong>`;
+        item.appendChild(nomeSpan);
 
-        item.appendChild(nomeId);
-        item.appendChild(copyBtn);
-        
+        // Ao clicar, preenche o campo com o título e executa a busca por título
         item.onclick = () => {
-            campoBusca.value = manga.ID; 
-            sugestoesContainer.innerHTML = ''; 
-            buscarHashmap(); 
+            campoBusca.value = manga.Título;
+            sugestoesContainer.innerHTML = '';
+            buscarIndexada();
         };
 
         sugestoesContainer.appendChild(item);
