@@ -62,7 +62,14 @@ async function carregarMangas() {
 
     // ETAPA 1: Puxar TODOS os dados do arquivo JSON
     try {
-        const response = await fetch('data.json');
+        // Tenta /static/data.json (funciona quando servido por Flask), senão tenta data.json relativo (abrir como arquivo local)
+        let response = null;
+        try {
+            response = await fetch('/static/data.json');
+            if (!response.ok) throw new Error('fallback');
+        } catch (e) {
+            response = await fetch('data.json');
+        }
         if (!response.ok) {
             throw new Error(`Erro de rede ao carregar data.json. Status: ${response.status}`);
         }

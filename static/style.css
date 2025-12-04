@@ -39,7 +39,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 #giyu-display {
     /* Define a imagem de fundo */
-    background-image: url('Imagens/Tomioka.png'); 
+    background-image: url('imagens/Giyu-san.png'); 
     
     /* Garante que a imagem inteira caiba sem cortes e respeite a proporção do personagem */
     background-size: contain; 
